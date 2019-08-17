@@ -53,6 +53,8 @@ FROM
   mybucket_logs
 WHERE     
   operation = 'REST.GET.BUCKET'
+  AND parse_datetime(requestdatetime,'dd/MMM/yyyy:HH:mm:ss Z')
+    >= (CURRENT_DATE - interval '10' day)
 GROUP BY
   bucket
   ,operation 
