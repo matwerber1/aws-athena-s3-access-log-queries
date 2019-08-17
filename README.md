@@ -2,6 +2,85 @@
 
 A collection of SQL queries that may be used with Amazon S3 server access logs. 
 
+## List different operation types in S3 access logs
+
+The S3 access logs have an **operation** field that corresponds to the REST APIs listed at: 
+https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketOps.html
+
+Based on my anecdotal testing, the values of **operation** are in the format of `REST.XXX.YYYY`, where `XXX` is the HTTP method and `YYYY` is the S3 resource / configuration being acted upon. 
+
+You can run this statement to see the operations that have been performed on your bucket: 
+```sql
+SELECT DISTINCT
+  operation
+FROM   
+  mybucket_logs
+```
+
+**Results:** see below for example results. Note that this list may be incomplete as there are APIs I have not tested on my bucket: 
+```
+REST.DELETE.BUCKETPOLICY
+REST.DELETE.METRICS
+REST.GET.ACCELERATE
+REST.GET.ACL
+REST.GET.ANALYTICS
+REST.GET.BUCKET
+REST.GET.BUCKETPOLICY
+REST.GET.CORS
+REST.GET.ENCRYPTION
+REST.GET.INVENTORY
+REST.GET.LIFECYCLE
+REST.GET.LOCATION
+REST.GET.LOGGING_STATUS
+REST.GET.METRICS
+REST.GET.NOTIFICATION
+REST.GET.OBJECT
+REST.GET.OBJECT_LOCK_CONFIGURATION
+REST.GET.POLICY_STATUS
+REST.GET.PUBLIC_ACCESS_BLOCK
+REST.GET.REPLICATION
+REST.GET.REQUEST_PAYMENT
+REST.GET.TAGGING
+REST.GET.VERSIONING
+REST.GET.WEBSITE
+REST.HEAD.BUCKET
+REST.HEAD.OBJECT
+REST.OPTIONS.PREFLIGHT
+REST.PUT.ANALYTICS
+REST.PUT.BUCKETPOLICY
+REST.PUT.INVENTORY
+REST.PUT.LOGGING_STATUS
+REST.PUT.METRICS
+REST.PUT.OBJECT
+REST.PUT.PART
+REST.PUT.PUBLIC_ACCESS_BLOCK
+REST.PUT.TAGGING
+```
+
+## View count of operations and success/errors on bucket in last 10 days
+
+```sql
+SELECT
+  bucket
+  ,operation
+  ,httpstatus
+  ,errorcode
+  ,count(*) AS count
+FROM   
+  mybucket_logs
+WHERE     
+  parse_datetime(requestdatetime,'dd/MMM/yyyy:HH:mm:ss Z')
+    >= (CURRENT_DATE - interval '10' day)
+GROUP BY
+  bucket
+  ,operation 
+  ,httpstatus
+  ,errorcode
+ORDER BY  
+  httpstatus desc, 
+  count desc
+```
+
 ## View summary of all S3 API calls in last 10 days
 
 The values of the **operation** column correspond with the API operations listed at:
