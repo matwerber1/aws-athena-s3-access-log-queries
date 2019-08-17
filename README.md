@@ -1,6 +1,15 @@
 # aws-athena-s3-access-log-queries
 
-A collection of SQL queries that may be used with Amazon S3 server access logs. 
+If you've enabled [Amazon S3 server access logging](https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html) on a given bucket, S3 will output access logs on that bucket to another bucket of your choice. From there, you can easily query these logs using Amazon Athena, Amazon Redshift Spectrum, Amazon EMR, and other tools. 
+
+This repo contains example queries for Amazon Athena. 
+
+## Prerequisites
+
+Enable server access logging on one or more of your Amazon S3 buckets and create a corresponding table table in your Athena / Glue data catalog by following the guide below: 
+https://aws.amazon.com/premiumsupport/knowledge-center/analyze-logs-athena/
+
+# Example SQL
 
 ## List different operation types in S3 access logs
 
