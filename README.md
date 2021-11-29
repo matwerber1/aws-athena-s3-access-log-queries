@@ -129,7 +129,7 @@ https://docs.aws.amazon.com/AmazonS3/latest/API/v2-RESTBucketGET.html
 
 ```sql
 SELECT 
-  bucket
+  bucket_name
   ,operation
   key
   -- ,requesturi_key                  -- uncomment to see additional query params 
@@ -144,7 +144,7 @@ WHERE
   AND parse_datetime(requestdatetime,'dd/MMM/yyyy:HH:mm:ss Z')
     >= (CURRENT_DATE - interval '10' day)
 GROUP BY
-  bucket
+  bucket_name
   ,operation 
   ,key
   -- ,requesturi_key                   -- uncomment to see additional query params
